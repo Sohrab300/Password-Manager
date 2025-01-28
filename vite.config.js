@@ -8,5 +8,5 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
-  base: "/Password Manager/",
+  base: "/Password-Manager/",
 })
