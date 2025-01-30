@@ -8,7 +8,15 @@ const Manager = () => {
   const [form, setform] = useState({ site: "", username: "", password: "" });
   const [passwordArray, setpasswordArray] = useState([]);
 
+  // const getPasswords = async () => {
+  //   let req = await fetch("http://localhost:3000");
+  //   let passwords = await req.json();
+  //   setpasswordArray(passwords);
+  //   console.log(passwords);
+  // };
+
   useEffect(() => {
+    // getPasswords();
     let passwords = localStorage.getItem("passwords");
     if (passwords) {
       setpasswordArray(JSON.parse(passwords));
@@ -27,12 +35,30 @@ const Manager = () => {
     }
   };
 
-  const bhejo = () => {
+  const bhejo = async () => {
     if (
       form.site.length > 3 &&
       form.username.length > 3 &&
       form.password.length > 3
     ) {
+      // the below 5 lines work at the time when a user is trying to edit the password. It basically deletes passwords with same ids if they already exist in the db
+      // await fetch("http://localhost:3000/", {
+      //   method: "DELETE",
+      //   headers: { "Content-type": "application/json" },
+      //   body: JSON.stringify({ id: form.id }),
+      // });
+
+      setpasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
+      // await fetch("http://localhost:3000/", {
+      //   method: "POST",
+      //   headers: { "Content-type": "application/json" },
+      //   body: JSON.stringify({ ...form, id: uuidv4() }),
+      // });
+      localStorage.setItem(
+        "passwords",
+        JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
+      );
+      console.log([...passwordArray, form]);
       toast("Password saved!!", {
         position: "top-right",
         autoClose: 5000,
@@ -43,20 +69,24 @@ const Manager = () => {
         progress: undefined,
         theme: "dark",
       });
-      setpasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
-      localStorage.setItem(
-        "passwords",
-        JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
-      );
-      console.log([...passwordArray, form]);
       setform({ site: "", username: "", password: "" });
     }
   };
 
-  const deletePassword = (id) => {
+  const deletePassword = async (id) => {
     console.log("Deleting password with id:", id);
     let c = confirm("Do you really want to delete this Password ?");
     if (c) {
+      setpasswordArray(passwordArray.filter((item) => item.id !== id));
+      localStorage.setItem(
+        "passwords",
+        JSON.stringify(passwordArray.filter((item) => item.id !== id))
+      );
+      // let res = await fetch("http://localhost:3000/", {
+      //   method: "DELETE",
+      //   headers: { "Content-type": "application/json" },
+      //   body: JSON.stringify({ id }),
+      // });
       toast("Password deleted!!", {
         position: "top-right",
         autoClose: 5000,
@@ -67,18 +97,13 @@ const Manager = () => {
         progress: undefined,
         theme: "dark",
       });
-      setpasswordArray(passwordArray.filter((item) => item.id !== id));
-      localStorage.setItem(
-        "passwords",
-        JSON.stringify(passwordArray.filter((item) => item.id !== id))
-      );
     }
   };
 
   const editPassword = (id) => {
     console.log("Editing password with id:", id);
-    setform(passwordArray.filter((i) => i.id == id)[0]);
-    setPasswordArray(passwordArray.filter((item) => item.id !== id));
+    setform({ ...passwordArray.filter((i) => i.id == id)[0], id: id });
+    setpasswordArray(passwordArray.filter((item) => item.id !== id));
   };
 
   const handleChange = (e) => {
@@ -243,7 +268,7 @@ const Manager = () => {
                       </td>
                       <td className="py-1 border border-white text-center">
                         <div className="flex items-center justify-center">
-                          <span>{item.password}</span>
+                          <span>{"*".repeat(item.password.length)}</span>
                           <div
                             className="lordiconcopy size-7 cursor-pointer"
                             onClick={() => {
