@@ -28,23 +28,29 @@ const Manager = () => {
   };
 
   const bhejo = () => {
-    toast("Password saved!!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
-    setpasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
-    localStorage.setItem(
-      "passwords",
-      JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
-    );
-    console.log([...passwordArray, form]);
-    setform({ site: "", username: "", password: "" });
+    if (
+      form.site.length > 3 &&
+      form.username.length > 3 &&
+      form.password.length > 3
+    ) {
+      toast("Password saved!!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      setpasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
+      localStorage.setItem(
+        "passwords",
+        JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
+      );
+      console.log([...passwordArray, form]);
+      setform({ site: "", username: "", password: "" });
+    }
   };
 
   const deletePassword = (id) => {
@@ -61,7 +67,7 @@ const Manager = () => {
         progress: undefined,
         theme: "dark",
       });
-      setPasswordArray(passwordArray.filter((item) => item.id !== id));
+      setpasswordArray(passwordArray.filter((item) => item.id !== id));
       localStorage.setItem(
         "passwords",
         JSON.stringify(passwordArray.filter((item) => item.id !== id))
@@ -107,9 +113,7 @@ const Manager = () => {
         pauseOnHover
         theme="light"
       />
-      <div className="absolute inset-0 -z-10 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)]"></div>
-
-      <div className="my-container">
+      <div className=" md:py-10 md:px-16 md:mx-auto md:container">
         <h1 className="text-4xl text-white font-bold text-center">
           <span className="text-green-600">&lt;</span>
           Pass<span className="text-green-600">MG/&gt;</span>
@@ -117,7 +121,8 @@ const Manager = () => {
         <p className="text-green-700 text-lg text-center">
           Your own Password Manager
         </p>
-        <div className="text-black flex flex-col p-4 gap-8 items-center">
+
+        <div className="text-black flex flex-col p-4 gap-8 items-center md:mt-14">
           <input
             value={form.site}
             onChange={handleChange}
@@ -125,15 +130,17 @@ const Manager = () => {
             className="bg-white rounded-lg border border-green-500 w-full px-4 py-1"
             type="text"
             name="site"
+            id="site"
           />
-          <div className="flex w-full justify-between gap-8">
+          <div className="flex flex-col md:flex-row w-full justify-between gap-8">
             <input
               value={form.username}
               onChange={handleChange}
               placeholder="Enter Username"
-              className="bg-white rounded-lg border border-green-500 w-full px-4 py-1"
+              className="bg-white rounded-lg border border-green-500 w-full md:w-[75%] px-4 py-1"
               type="text"
               name="username"
+              id="username"
             />
             <div className="relative">
               <input
@@ -141,12 +148,13 @@ const Manager = () => {
                 onChange={handleChange}
                 placeholder="Enter Password"
                 ref={ref} // Attach ref to the input
-                className="bg-white rounded-lg border border-green-500 w-full px-4 py-1"
+                className="bg-white rounded-lg border border-green-500 w-full pl-4 pr-[3rem] py-1"
                 type="password"
                 name="password"
+                id="password"
               />
               <span
-                className="absolute right-[5px] top-[4px] cursor-pointer"
+                className="absolute font-bold right-[5px] top-[4px] cursor-pointer"
                 onClick={showPassword}
               >
                 {show ? "hide" : "show"}
@@ -172,7 +180,7 @@ const Manager = () => {
             <div className="text-white text-center"> No passwords to show</div>
           )}
           {passwordArray.length != 0 && (
-            <table className="table-auto w-full rounded-md overflow-hidden">
+            <table className=" table-fixed md:table-auto w-full rounded-md overflow-hidden mb-10">
               <thead className="bg-green-800 text-white">
                 <tr>
                   <th className="py-1">Site</th>
@@ -188,7 +196,9 @@ const Manager = () => {
                       <td className="py-1 border border-white text-center">
                         <div className="flex items-center justify-center">
                           <a href={item.site} target="_blank">
-                            {item.site}
+                            <span className="w--[0%] overflow-hidden">
+                              {item.site}
+                            </span>
                           </a>
                           <div
                             className="lordiconcopy size-7 cursor-pointer"
