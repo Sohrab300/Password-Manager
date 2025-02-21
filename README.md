@@ -4,12 +4,14 @@ A secure and user-friendly Password Manager built with React.js and styled using
 
 🚀 Features:
 
-Manage and store strong passwords
-User-friendly interface with a sleek design
+Manage and store strong passwords, 
+User-friendly interface with a sleek design, 
 Responsive and fast performance
+
 🛠 Tech Stack:
 
-React.js – Frontend framework
-Tailwind CSS – Modern styling
+React.js – Frontend framework, 
+Tailwind CSS – Modern styling, 
 GitHub Pages – Deployed for easy access
+
 🔗 Live Demo: https://sohrab300.github.io/Password-Manager/
